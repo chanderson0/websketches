@@ -1,0 +1,10 @@
+{
+  "name": "screenshotter",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^0.13.0",
+    "rimraf": "^2.6.2"
+  }
+}
