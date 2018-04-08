@@ -21,6 +21,6 @@
   },
   "scripts": {
     "dev": "budo src/index.ts:app.js --dir public --live -- --debug -p [ tsify ] -t [ glslify ]",
-    "build": "rm -rf build/* && cp public/* build/ && browserify --debug src/index.ts -p [ tsify, glslify ] -o build/app.js"
+    "build": "rm -rf build/* && cp public/* build/ && browserify --debug src/index.ts -p [ tsify ] -t [ glslify ] -o build/app.js"
   }
 }
