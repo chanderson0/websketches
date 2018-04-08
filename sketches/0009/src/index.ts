@@ -49,8 +49,6 @@ for (let x = -0.4; x <= 0.4; x += 0.05) {
       wireframe: true
     });
     const cube = new THREE.Mesh(geometry, material);
-    // const x = Math.random() * 0.8 - 0.4;
-    // const y = Math.random() * 0.6 - 0.3;
 
     line.rotateX(x * Math.PI * 1.0);
     line.rotateY(y * Math.PI * 1.0);
@@ -65,57 +63,47 @@ for (let x = -0.4; x <= 0.4; x += 0.05) {
 
 renderer.render(scene, camera);
 
-// const noise = new SimplexNoise();
-// function gradientDir(pos: typeof Two.Vector) {
-//   const EPS = 0.01;
-//   const SCALE = 0.003;
-//   const SPEED = 50;
+function downloadData(data: string, filename: string) {
+  const link = document.createElement("a");
+  link.href = data;
+  link.download = filename;
+  link.click();
+}
 
-//   const l = noise.noise2D(SCALE * pos.x - EPS, SCALE * pos.y);
-//   const r = noise.noise2D(SCALE * pos.x + EPS, SCALE * pos.y);
-//   const u = noise.noise2D(SCALE * pos.x, SCALE * pos.y + EPS);
-//   const d = noise.noise2D(SCALE * pos.x, SCALE * pos.y - EPS);
+function downloadSVG() {
+  const svg = renderer.domElement;
+  svg.setAttribute("version", "1.1");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
-//   return new Two.Vector(-(r - l) * SPEED, (u - d) * SPEED);
-// }
+  const blob = new Blob([svg.outerHTML], {type:"image/svg+xml;charset=utf-8"});
+  const data = URL.createObjectURL(blob);
+  downloadData(data, 'capture.svg');
+}
 
-// const allPoints: typeof two.Anchor[][] = [];
-// for (let i = 0; i < 5000; ++i) {
-//   const x = Math.random() * two.width;
-//   const y = Math.random() * two.height;
+function downloadPNG() {
+  const svgData = new XMLSerializer().serializeToString(renderer.domElement);
+  const canvas = document.createElement("canvas");
+  var svgSize = renderer.domElement.getBoundingClientRect();
+  canvas.width = svgSize.width;
+  canvas.height = svgSize.height;
 
-//   let pos = new Two.Vector(x, y);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
-//   const points = [new Two.Anchor(pos.x, pos.y)];
-//   for (let j = 0; j < 7; ++j) {
-//     pos.addSelf(gradientDir(pos));
-//     // pos.addSelf(new Two.Vector(Math.random(), Math.random()).multiplyScalar(2.0));
-//     points.push(new Two.Anchor(pos.x, pos.y));
-//   }
-//   allPoints.push(points);
-// }
+  const img = document.createElement("img");
+  img.setAttribute("src", "data:image/svg+xml;base64," + btoa(svgData));
 
-// allPoints.sort((a: typeof two.Anchor[], b: typeof two.Anchor[]) => {
-//   const aColumn = Math.floor(a[0].x / 10.0) * 10.0;
-//   const bColumn = Math.floor(b[0].x / 10.0) * 10.0;
-//   const yDiff = a[0].y - b[0].y;
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0);
 
-//   if (aColumn < bColumn) {
-//     return 1;
-//   } else if (aColumn > bColumn) {
-//     return -1;
-//   } else {
-//     return yDiff;
-//   }
-// });
+    downloadData(canvas.toDataURL("image/png"), "capture.png");
+  };
+}
 
-// const paths: typeof Two.Path[] = [];
-// for (const points of allPoints) {
-//   const path = two.makeCurve(points, true);
-//   path.stroke = "#222";
-//   path.linewidth = 1;
-//   path.noFill();
-
-//   paths.push(path);
-// }
-// two.update();
+window.addEventListener("keypress", e => {
+  if (e.key == "s") {
+    downloadSVG();
+  } else if (e.key == "p") {
+    downloadPNG();
+  }
+});

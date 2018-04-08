@@ -255,7 +255,7 @@ const SVGRenderer = function () {
 
 		scene.traverseVisible( function ( object ) {
 
-			 if ( object instanceof THREE.SVGObject ) {
+			 if ( object instanceof SVGObject ) {
 
 				_vector3.setFromMatrixPosition( object.matrixWorld );
 				_vector3.applyMatrix4( _viewProjectionMatrix );

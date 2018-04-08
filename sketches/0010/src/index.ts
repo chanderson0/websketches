@@ -76,3 +76,52 @@ two.update();
 //   paths.push(path);
 // }
 // two.update();
+
+function downloadData(data: string, filename: string) {
+  const link = document.createElement("a");
+  link.href = data;
+  link.download = filename;
+  link.click();
+}
+
+function downloadSVG() {
+  if (!elem) return;
+
+  const svg = elem.children[0];
+  svg.setAttribute("version", "1.1");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+  const blob = new Blob([svg.outerHTML], {type:"image/svg+xml;charset=utf-8"});
+  const data = URL.createObjectURL(blob);
+  downloadData(data, 'capture.svg');
+}
+
+function downloadPNG() {
+  if (!elem) return;
+
+  const svgData = new XMLSerializer().serializeToString(elem.children[0]);
+  const canvas = document.createElement("canvas");
+  var svgSize = elem.getBoundingClientRect();
+  canvas.width = svgSize.width;
+  canvas.height = svgSize.height;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const img = document.createElement("img");
+  img.setAttribute("src", "data:image/svg+xml;base64," + btoa(svgData));
+
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0);
+
+    downloadData(canvas.toDataURL("image/png"), "capture.png");
+  };
+}
+
+window.addEventListener("keypress", e => {
+  if (e.key == "s") {
+    downloadSVG();
+  } else if (e.key == "p") {
+    downloadPNG();
+  }
+});
