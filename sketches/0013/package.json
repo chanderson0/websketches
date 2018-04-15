@@ -14,7 +14,7 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "ccapture.js": "^1.0.7",
+    "ccapture.js": "1.0.7",
     "color": "^2.0.1",
     "glslify": "^6.1.0",
     "simplex-noise": "^2.4.0",
