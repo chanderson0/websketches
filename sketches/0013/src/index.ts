@@ -57,25 +57,7 @@ for (let i = 0; i < TOTAL; ++i) {
     R * Math.sin(s) * Math.sin(t),
     R * Math.cos(t)
   );
-  // let center = new THREE.Vector3();
-  // do {
-  //   center.set(
-  //     Math.random() * 2.0 - 1.0,
-  //     Math.random() * 2.0 - 1.0,
-  //     Math.random() * 2.0 - 1.0
-  //   );
-  // } while (center.distanceTo(CIRCLE_CENTER) > R);
   centers.push(center);
-
-  // const pos = center
-  //   .clone()
-  //   .add(
-  //     new THREE.Vector3(
-  //       Math.random() - 0.5,
-  //       Math.random() - 0.5,
-  //       Math.random() - 0.5
-  //     ).multiplyScalar(2.0 * R * 0.03)
-  //   );
   offsets.push(center.x, center.y, center.z);
 
   const color = Color(0x182048);
@@ -102,45 +84,6 @@ const material = new THREE.RawShaderMaterial({
 
 const mesh = new THREE.Mesh(instanceGeom, material);
 scene.add(mesh);
-
-// const lineData: number[] = [];
-// const NEEDLES = Math.floor(Math.pow(TOTAL, 0.25));
-// for (let i = 0; i < TOTAL; ++i) {
-//   const candidates: Array<[number, number]> = [];
-//   for (let candidateIdx = 0; candidateIdx < TOTAL; ++candidateIdx) {
-//     if (i === candidateIdx) continue;
-
-//     const dist = centers[i].distanceToSquared(centers[candidateIdx]);
-//     if (candidates.length < NEEDLES) {
-//       candidates.push([candidateIdx, dist]);
-//     } else if (dist < candidates[candidates.length - 1][1]) {
-//       // console.log(candidates.length, dist);
-//       // if (candidates.length == NEEDLES) {
-//       //   console.log(candidates[candidates.length - 1][1]);
-//       // }
-//       candidates.splice(candidates.length - 1, 1, [candidateIdx, dist]);
-//       candidates.sort((a, b) => a[1] - b[1]);
-//     }
-//   }
-//   // console.log(candidates);
-//   const j = candidates[Math.floor(Math.random() * candidates.length)][0];
-//   pairs[i] = j;
-
-//   lineData.push(offsets[i * 3], offsets[i * 3 + 1], offsets[i * 3 + 2]);
-//   lineData.push(offsets[j * 3], offsets[j * 3 + 1], offsets[j * 3 + 2]);
-// }
-
-// const linesGeom = new THREE.BufferGeometry();
-// const lineVertAttr = new THREE.BufferAttribute(new Float32Array(lineData), 3);
-// linesGeom.addAttribute("position", lineVertAttr);
-// const linesMat = new THREE.LineBasicMaterial({
-//   color: 0xffffff,
-//   opacity: 0.6,
-//   linewidth: 3.0,
-//   transparent: true
-// });
-// const lines = new THREE.LineSegments(linesGeom, linesMat);
-// scene.add(lines);
 
 let recording = false;
 const RECORDING_FPS = 60;
@@ -213,29 +156,11 @@ function loop() {
       color.red() / 255,
       color.green() / 255,
       color.blue() / 255,
-      1.0 //(Math.sin(dist * 3 - lastFrame / 1000 * 2.0) * 0.5 + 0.5) * 0.7 + 0.3
+      1.0
     );
   }
   offsetAttribute.needsUpdate = true;
   colorAttribute.needsUpdate = true;
-
-  // for (let i = 0; i < TOTAL; ++i) {
-  //   const j = pairs[i];
-  //   {
-  //     pos.fromArray(offsetAttribute.array as number[], i * 3);
-  //     lineVertAttr.setXYZ(i * 2, pos.x, pos.y, pos.z);
-  //   }
-  //   {
-  //     pos.fromArray(offsetAttribute.array as number[], j * 3);
-  //     lineVertAttr.setXYZ(i * 2 + 1, pos.x, pos.y, pos.z);
-  //   }
-  // }
-  // lineVertAttr.needsUpdate = true;
-
-  // mesh.rotation.x += 0.5 * delta;
-  // mesh.rotation.z += 0.3 * delta;
-  // lines.rotation.x = mesh.rotation.x;
-  // lines.rotation.z = mesh.rotation.z;
 
   renderer.render(scene, camera);
 
