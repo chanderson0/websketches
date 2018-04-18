@@ -1,0 +1,25 @@
+{
+  "name": "template",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Chris Anderson <chris@heyanderson.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/three": "^0.89.1",
+    "browserify": "^14.5.0",
+    "budo": "^10.0.4",
+    "tsify": "^3.0.4",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "ccapture.js": "1.0.7",
+    "glsl-noise": "^0.0.0",
+    "glslify": "^6.1.1",
+    "three": "^0.89.0"
+  },
+  "scripts": {
+    "dev": "budo src/index.ts:app.js --dir public --live -- --debug -p [ tsify ] -t [ glslify ]",
+    "build": "rm -rf build/* && cp public/* build/ && browserify --debug src/index.ts -p [ tsify ] -t [ glslify ] -o build/app.js"
+  }
+}
