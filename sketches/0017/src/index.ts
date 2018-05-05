@@ -73,16 +73,16 @@ const colorizerMat = new THREE.ShaderMaterial({
   side: THREE.DoubleSide
 });
 
-const NUM = 10;
+const NUM = 256;
+const SCALE = 0.03;
 const balls: Array<THREE.Mesh> = [];
 for (let i = 0; i < NUM; ++i) {
   const ball = new THREE.Mesh(
-    new THREE.SphereBufferGeometry(0.1, 8, 8),
+    new THREE.SphereBufferGeometry(SCALE, 8, 8),
     new THREE.MeshBasicMaterial({
       color: 0xffffff
     })
   );
-  ball.scale.set(0.3, 0.3, 0.3);
   balls.push(ball);
   scene.add(ball);
 }
@@ -111,19 +111,22 @@ function loop() {
   lastFrame = +new Date();
 
   // UPDATE
-
+  const speed = 1.0;
   for (let i = 0; i < NUM; ++i) {
     const ball = balls[i];
-    ball.position.set(
-      Math.cos(i / NUM * Math.PI * 2.0 + time * 1.0) * 0.18,
-      Math.sin(i / NUM * Math.PI * 2.0 + time * 1.0) * 0.18,
+    const frac = i / NUM;
+    const pos = new THREE.Vector3(
+      Math.cos(frac * Math.PI * 1.0 + time * speed) * 0.25,
+      Math.sin(frac * Math.PI * 0.5 + time * speed) * 0.1,
       0
     );
+    pos.applyAxisAngle(new THREE.Vector3(0, 0, 1), frac * Math.PI * 2.0);
+    ball.position.copy(pos);
   }
   renderer.render(scene, camera, sceneOutput);
 
   quad.material = pass1Mat;
-  pass1Mat.uniforms.time.value = time;  
+  pass1Mat.uniforms.time.value = time;
   pass1Mat.uniforms.prevFrame.value = drawBuffer;
   drawBuffer = drawBuffer === buffer1 ? buffer2 : buffer1;
   renderer.render(postScene, camera, drawBuffer);
