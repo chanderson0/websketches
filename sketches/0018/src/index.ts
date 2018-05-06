@@ -111,7 +111,7 @@ function loop() {
 
   // UPDATE
 
-  const LEN = 0.4;
+  const LEN = 0.47;
   const MAX_WIDTH = 0.2;
   for (let i = 0; i < NUM; ++i) {
     const { line, geo, mat } = lines[i];
