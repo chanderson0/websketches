@@ -196,7 +196,7 @@ function loop() {
         0
       ).applyAxisAngle(
         kUp,
-        (circleFrac - j * 0.01 + cycleFrac * cRFrac) * Math.PI * -2.0
+        (circleFrac - j * 0.01 + cycleFrac * cRFrac) * Math.PI * 2.0 * (circleIdx % 2 == 0 ? -1 : 1)
       );
       const dir = center.clone().applyAxisAngle(kUp, Math.PI / 2.0);
 
@@ -216,7 +216,7 @@ function loop() {
             dir
               .clone()
               .normalize()
-              .multiplyScalar(ptFracCenter * len * -1)
+              .multiplyScalar(ptFracCenter * len * (circleIdx % 2 == 0 ? -1 : 1))
           )
           .add(
             ortho
