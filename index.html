@@ -174,11 +174,23 @@
     window.addEventListener('load', function () {
       const videos = document.getElementsByTagName("video");
       for (const video of videos) {
+        let playing = false;
+        let mouseOver = false;
         video.addEventListener('mouseover', function () {
-          video.play();
+          mouseOver = true;
+          video.play().then(() => {
+            playing = true;
+            if (!mouseOver) {
+              video.pause();
+            }
+          });
         });
         video.addEventListener('mouseout', function () {
-          video.pause();
+          mouseOver = false;
+          if (playing) {
+            video.pause();
+            playing = false;
+          }
         });
       }
     });
