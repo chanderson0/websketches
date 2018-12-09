@@ -5,6 +5,7 @@
   "author": "Chris Anderson <chris@heyanderson.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/color": "^3.0.0",
     "@types/three": "^0.89.10",
     "browserify": "^14.5.0",
     "budo": "^10.0.4",
@@ -15,11 +16,15 @@
   },
   "dependencies": {
     "ccapture.js": "1.0.7",
+    "color": "^3.1.0",
+    "glsl-fxaa": "^3.0.0",
+    "glsl-map": "^1.0.1",
     "imagetracerjs": "^1.2.4",
     "potrace-js": "^0.0.6",
     "simplex-noise": "^2.4.0",
     "three": "^0.90.0",
-    "three-effectcomposer-es6": "^0.0.4"
+    "three-effectcomposer-es6": "^0.0.4",
+    "three-shader-fxaa": "^5.1.1"
   },
   "scripts": {
     "dev": "budo src/index.ts:app.js --dir public --live -- --debug -p [ tsify ] -t [ glslify ]",

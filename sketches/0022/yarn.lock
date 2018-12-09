@@ -9,6 +9,25 @@
   dependencies:
     commander "^2.15.1"
 
+"@types/color-convert@*":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-1.9.0.tgz#bfa8203e41e7c65471e9841d7e306a7cd8b5172d"
+  integrity sha512-OKGEfULrvSL2VRbkl/gnjjgbbF7ycIlpSsX7Nkab4MOWi5XxmgBYvuiQ7lcCFY5cPDz7MUNaKgxte2VRmtr4Fg==
+  dependencies:
+    "@types/color-name" "*"
+
+"@types/color-name@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.0.tgz#926f76f7e66f49cc59ad880bb15b030abbf0b66d"
+  integrity sha512-gZ/Rb+MFXF0pXSEQxdRoPMm5jeO3TycjOdvbpbcpHX/B+n9AqaHFe5q6Ga9CsZ7ir/UgIWPfrBzUzn3F19VH/w==
+
+"@types/color@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/color/-/color-3.0.0.tgz#40f8a6bf2fd86e969876b339a837d8ff1b0a6e30"
+  integrity sha512-5qqtNia+m2I0/85+pd2YzAXaTyKO8j+svirO5aN+XaQJ5+eZ8nx0jPtEWZLxCi50xwYsX10xUHetFzfb1WEs4Q==
+  dependencies:
+    "@types/color-convert" "*"
+
 "@types/three@^0.89.10":
   version "0.89.10"
   resolved "https://registry.yarnpkg.com/@types/three/-/three-0.89.10.tgz#60c7f8584566e3d58990c19321a658342892acaf"
@@ -524,9 +543,37 @@ color-convert@^1.9.0:
   dependencies:
     color-name "^1.1.1"
 
-color-name@^1.1.1:
+color-convert@^1.9.1:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.3.tgz#bb71850690e1f136567de629d2d5471deda4c1e8"
+  integrity sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==
+  dependencies:
+    color-name "1.1.3"
+
+color-name@1.1.3, color-name@^1.1.1:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
+
+color-name@^1.0.0:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
+  integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
+
+color-string@^1.5.2:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.3.tgz#c9bbc5f01b58b5492f3d6857459cb6590ce204cc"
+  integrity sha512-dC2C5qeWoYkxki5UAXapdjqO672AM4vZuPGRQfO8b5HKuKGBbKWpITyDYN7TOFKvRW7kOgAn3746clDBMDJyQw==
+  dependencies:
+    color-name "^1.0.0"
+    simple-swizzle "^0.2.2"
+
+color@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/color/-/color-3.1.0.tgz#d8e9fb096732875774c84bf922815df0308d0ffc"
+  integrity sha512-CwyopLkuRYO5ei2EpzpIh6LqJMt6Mt+jZhO5VI5f/wJLZriXQE32/SSqzmrh+QB+AZT81Cj8yv+7zwToW8ahZg==
+  dependencies:
+    color-convert "^1.9.1"
+    color-string "^1.5.2"
 
 combine-source-map@~0.7.1:
   version "0.7.2"
@@ -1081,6 +1128,11 @@ glob@^7.0.5, glob@^7.1.0, glob@^7.1.1:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
+glsl-fxaa@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/glsl-fxaa/-/glsl-fxaa-3.0.0.tgz#f432228fba9d2a8a7240943c593d20c3176f3b93"
+  integrity sha1-9DIij7qdKopyQJQ8WT0gwxdvO5M=
+
 glsl-inject-defines@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/glsl-inject-defines/-/glsl-inject-defines-1.0.3.tgz#dd1aacc2c17fcb2bd3fc32411c6633d0d7b60fd4"
@@ -1089,6 +1141,11 @@ glsl-inject-defines@^1.0.1:
     glsl-token-inject-block "^1.0.0"
     glsl-token-string "^1.0.1"
     glsl-tokenizer "^2.0.2"
+
+glsl-map@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/glsl-map/-/glsl-map-1.0.1.tgz#5ff0df638876bb66fdad010a3c641479eb9015a5"
+  integrity sha1-X/DfY4h2u2b9rQEKPGQUeeuQFaU=
 
 glsl-resolve@0.0.1:
   version "0.0.1"
@@ -1395,6 +1452,11 @@ internal-ip@^1.0.1:
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
+
+is-arrayish@^0.3.1:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.3.2.tgz#4574a2ae56f7ab206896fb431eaeed066fdf8f03"
+  integrity sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==
 
 is-binary-path@^1.0.0:
   version "1.0.1"
@@ -2383,6 +2445,13 @@ simple-html-index@^1.4.0:
   dependencies:
     from2-string "^1.1.0"
 
+simple-swizzle@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/simple-swizzle/-/simple-swizzle-0.2.2.tgz#a4da6b635ffcccca33f70d17cb92592de95e557a"
+  integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
+  dependencies:
+    is-arrayish "^0.3.1"
+
 simplex-noise@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/simplex-noise/-/simplex-noise-2.4.0.tgz#81b3458fb22dccc3bc8dd9a977c73797f86f523a"
@@ -2625,6 +2694,11 @@ three-effectcomposer-es6@^0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/three-effectcomposer-es6/-/three-effectcomposer-es6-0.0.4.tgz#da3471bac92c721845790e964e52835d5cbd8cf2"
   integrity sha1-2jRxuskschhFeQ6WTlKDXVy9jPI=
+
+three-shader-fxaa@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/three-shader-fxaa/-/three-shader-fxaa-5.1.1.tgz#636f6981df6977ab4105bc3f96bbea39afa8f483"
+  integrity sha1-Y29pgd9pd6tBBbw/lrvqOa+o9IM=
 
 three@^0.90.0:
   version "0.90.0"

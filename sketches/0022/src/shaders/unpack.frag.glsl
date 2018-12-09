@@ -1,10 +1,15 @@
 #include <packing>
 
+#pragma glslify: map = require(glsl-map)
+
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
 uniform sampler2D tDepth;
 uniform float cameraNear;
 uniform float cameraFar;
+uniform vec3 tBgColor;
+uniform vec3 tFgColor;
+uniform vec3 tScreenColor;
 
 // const mat3 sobelKernelX = mat3(1.0, 0.0, -1.0,
 // 							                 2.0, 0.0, -2.0,
@@ -54,17 +59,53 @@ void main() {
   // float sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
 	// gl_FragColor = vec4( 1.0 - vec3(sobel), 1.0 );
 
-  // float depth = readDepth( tDepth, vUv );
-  // // if (depth < 0.99) {
-  // //   float frac = fract(depth / 0.001);
-  // //   depth = frac > 0.5 ? 0.0 : 1.0;
-  // // }
-  // gl_FragColor.rgb = 1.0 - vec3( depth );
+  float depth = readDepth( tDepth, vUv );
+  float truedepth = depth;
+  // if (depth < 0.99) {
+  //   float frac = fract(depth / 0.001);
+  //   depth = frac > 0.5 ? 0.0 : 1.0;
+  // }
+  float pixelDepth = map(depth, 0.0, 1.0, cameraNear, cameraFar);
+  float drawDepth = map(pixelDepth, 4.9, 5.025, 0.0, 1.0);
+  drawDepth = clamp(drawDepth, 0.0, 1.0);
+  // drawDepth = 1.0 - drawDepth;
+  drawDepth = pow(drawDepth, 0.5);
+
+  float gamma = 1.0;
+  float numColors = 6.0;
+
+  float a = pow(drawDepth, gamma);
+  a = a * numColors;
+  a = floor(a);
+  a = a / numColors;
+  a = pow(a, 1.0/gamma);
+  
+  vec3 outColor = map(vec3(a), vec3(0.0), vec3(1.0), tBgColor, tFgColor);
+
+  gl_FragColor.rgb = outColor;
   // gl_FragColor.a = 1.0;
 
-  vec3 c = texture2D(tDiffuse, vUv).rgb;
-  if (c.r > 0.0001 || c.b > 0.0001 || c.g > 0.0001) {
-    c.b = 1.0 - c.r;
+  // vec3 c = texture2D(tDiffuse, vUv).rgb;
+  // // if (c.r > 0.0001 || c.b > 0.0001 || c.g > 0.0001) {
+  // //   c.b = 1.0 - c.r;
+  // // }
+
+ 
+
+  // // // float gray = (c.r + c.g)/2.0;
+
+  // float gray = drawDepth;
+
+  // vec3 c = pow(outColor, vec3(gamma, gamma, gamma));
+  // c = c * numColors;
+  // c = floor(c);
+  // c = c / numColors;
+  // c = pow(c, vec3(1.0/gamma));
+
+  // gl_FragColor = vec4(vec3(c), 1.0);
+  if (truedepth > 0.99) {
+    gl_FragColor = vec4(tScreenColor, 1.0);
+  }  else {
+    gl_FragColor.a = 1.0;
   }
-  gl_FragColor = vec4(c, 1.0);
 }

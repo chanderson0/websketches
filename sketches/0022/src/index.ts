@@ -7,6 +7,9 @@ import EffectComposer, {
   CopyShader
 } from "three-effectcomposer-es6";
 import * as CCapture from "ccapture.js";
+import * as Color from "color";
+// @ts-ignore
+// import * as FXAAShader from "three-shader-fxaa";
 
 const recorder = new CCapture({
   name: "Sketch-0022",
@@ -23,6 +26,19 @@ const fmod = function(a: number, b: number) {
   return a - Math.floor(a / b) * b;
 };
 
+const SCREEN_BG_COLOR = 0xff985c;
+const BG_COLOR = 0xffe66a;
+const FG_COLOR = 0xf75916;
+
+const FXAAShader = {
+  uniforms: {
+    tDiffuse: { type: "t", value: new THREE.Texture() },
+    resolution: { type: "v2", value: new THREE.Vector2() }
+  },
+  vertexShader: glsl.file("./shaders/three-shader-fxaa/vert.glsl"),
+  fragmentShader: glsl.file("./shaders/three-shader-fxaa/frag.glsl")
+};
+
 const SHADOW = `
 <defs>
   <filter id="shadow" x="0" y="0">
@@ -37,13 +53,13 @@ const app = document.getElementById("app") as HTMLElement;
 let svgElement: SVGElement | null = null;
 let palette: any = undefined;
 
-const SCALE = 0.5;
+const SCALE = 2.0;
 const OUTPUT_WIDTH = 724 * SCALE;
 const OUTPUT_HEIGHT = 512 * SCALE;
 const ASPECT = OUTPUT_WIDTH / OUTPUT_HEIGHT;
 
 const scene = new THREE.Scene();
-// scene.background = new THREE.Color(0x000000);
+scene.background = new THREE.Color(0x000000);
 const camera = new THREE.OrthographicCamera(
   -0.5,
   0.5,
@@ -56,7 +72,8 @@ camera.position.set(0, 0, -5);
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 const renderer = new THREE.WebGLRenderer({
-  antialias: true
+  antialias: true,
+  alpha: true
 });
 // renderer.setClearColor(new THREE.Color(), 0);
 renderer.setSize(OUTPUT_WIDTH, OUTPUT_HEIGHT);
@@ -71,18 +88,49 @@ class OrthoDepthStripes {
   needsSwap: boolean = true;
   material: THREE.ShaderMaterial;
 
+  renderTargetDepth: THREE.WebGLRenderTarget;
+  depthTexture = new THREE.DepthTexture(
+    OUTPUT_WIDTH,
+    OUTPUT_HEIGHT,
+    THREE.UnsignedShortType,
+    THREE.UVMapping,
+    THREE.ClampToEdgeWrapping,
+    THREE.ClampToEdgeWrapping,
+    THREE.NearestFilter,
+    THREE.NearestFilter,
+    THREE.DepthFormat
+  );
+
   constructor(
-    camera: THREE.OrthographicCamera,
-    target: THREE.WebGLRenderTarget
+    readonly camera: THREE.OrthographicCamera,
+    readonly scene: THREE.Scene,
+    readonly bgColor: number,
+    readonly fgColor: number,
+    readonly screenColor: number
   ) {
+    this.renderTargetDepth = new THREE.WebGLRenderTarget(
+      OUTPUT_WIDTH,
+      OUTPUT_HEIGHT
+    );
+    this.renderTargetDepth.texture.format = THREE.RGBFormat;
+    this.renderTargetDepth.texture.minFilter = THREE.NearestFilter;
+    this.renderTargetDepth.texture.magFilter = THREE.NearestFilter;
+    this.renderTargetDepth.texture.generateMipmaps = false;
+    this.renderTargetDepth.stencilBuffer = false;
+    this.renderTargetDepth.depthBuffer = true;
+    this.renderTargetDepth.depthTexture = this.depthTexture;
+
     this.material = new THREE.ShaderMaterial({
       vertexShader: unpackVert,
       fragmentShader: unpackFrag,
       uniforms: {
         cameraNear: { value: camera.near },
         cameraFar: { value: camera.far },
-        tDiffuse: { value: target.texture },
-        tDepth: { value: target.depthTexture }
+        tDepth: { value: this.depthTexture },
+        tDiffuse: { value: this.depthTexture },
+        tBgColor: { value: new THREE.Color(bgColor) },
+        tFgColor: { value: new THREE.Color(fgColor) },
+        tScreenColor: { value: new THREE.Color(screenColor) }
       }
     });
   }
@@ -93,9 +141,9 @@ class OrthoDepthStripes {
     readBuffer: THREE.RenderTarget,
     delta: number
   ) {
-    this.material.uniforms.tDiffuse.value = (readBuffer as THREE.WebGLRenderTarget).texture;
-    this.material.uniforms.tDepth.value = (readBuffer as THREE.WebGLRenderTarget).depthTexture;
+    renderer.render(this.scene, this.camera, this.renderTargetDepth, true);
 
+    this.material.uniforms.tDiffuse.value = (readBuffer as THREE.WebGLRenderTarget).texture;
     EffectComposer.quad.material = this.material;
 
     if (this.renderToScreen) {
@@ -112,36 +160,25 @@ class OrthoDepthStripes {
 }
 
 const target = new THREE.WebGLRenderTarget(OUTPUT_WIDTH, OUTPUT_HEIGHT);
-target.texture.format = THREE.RGBFormat;
-target.texture.minFilter = THREE.NearestFilter;
-target.texture.magFilter = THREE.NearestFilter;
-target.texture.generateMipmaps = false;
-target.stencilBuffer = false;
-target.depthBuffer = true;
-target.depthTexture = new THREE.DepthTexture(
-  OUTPUT_WIDTH,
-  OUTPUT_HEIGHT,
-  THREE.UnsignedShortType,
-  THREE.UVMapping,
-  THREE.ClampToEdgeWrapping,
-  THREE.ClampToEdgeWrapping,
-  THREE.NearestFilter,
-  THREE.NearestFilter,
-  THREE.DepthFormat
-);
-
 const composer = new EffectComposer(renderer, target);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new OrthoDepthStripes(camera, target));
+composer.addPass(new OrthoDepthStripes(camera, scene, BG_COLOR, FG_COLOR, SCREEN_BG_COLOR));
 
-const copyPass = new ShaderPass(CopyShader);
-copyPass.renderToScreen = true;
-composer.addPass(copyPass);
+// const fxaa = new ShaderPass(FXAAShader);
+// console.log(fxaa);
+// fxaa.uniforms.resolution = {
+//   value: new THREE.Vector2(OUTPUT_WIDTH, OUTPUT_HEIGHT)
+// };
+// fxaa.renderToScreen = true;
+// composer.addPass(fxaa);
 
-// const postPlane = new THREE.PlaneBufferGeometry(2, 2);
-// const postQuad = new THREE.Mesh(postPlane, postMaterial);
-// const postScene = new THREE.Scene();
-// postScene.add(postQuad);
+const effectFXAA = new ShaderPass(FXAAShader);
+effectFXAA.uniforms["resolution"].value.set(
+  1 / OUTPUT_WIDTH,
+  1 / OUTPUT_HEIGHT
+);
+effectFXAA.renderToScreen = true;
+composer.addPass(effectFXAA);
 
 // let i = 0;
 // for (let x = -0.4; x <= 0.4; x += 0.25) {
@@ -170,7 +207,7 @@ composer.addPass(copyPass);
 // }
 
 const meshes: THREE.Mesh[] = [];
-const NUM = 10;
+const NUM = 100;
 for (let i = 0; i < NUM; ++i) {
   const geometry = new THREE.TorusGeometry(0.1, 0.05, 50, 100);
   const material = new THREE.MeshNormalMaterial({
@@ -179,7 +216,7 @@ for (let i = 0; i < NUM; ++i) {
   });
   const mesh = new THREE.Mesh(geometry, material);
   const frac = i / (NUM - 1);
-  mesh.position.x = (frac - 0.5) * 0.6;
+  mesh.position.x = (frac - 0.5) * 0.7;
   mesh.rotateX(0.2 * Math.PI + frac * Math.PI);
   mesh.rotateY(0.2 * Math.PI);
   mesh.rotateZ(0.2 * Math.PI);
@@ -194,7 +231,7 @@ offscreenCanvas.height = webglCanvas.height;
 const offscreenCtx = offscreenCanvas.getContext("2d");
 
 let recording = false;
-const RECORDING_FPS = 30;
+const RECORDING_FPS = 60;
 
 let time = 0;
 let lastFrame = +new Date();
@@ -224,11 +261,12 @@ function loop() {
   // UPDATE
   for (let i = 0; i < NUM; ++i) {
     const mesh = meshes[i];
-    const frac = i / (NUM - 1);
+    const x = mesh.position.x;
     // mesh.position.x = (frac - 0.5) * 0.6;
     // mesh.position.y = Math.sin(time + i) * 0.05;
 
-    mesh.rotation.x = ((time * 0.2 + i * 0.1) % 1.0) * Math.PI * 2;
+    mesh.rotation.x = ((time * 0.4 + x * 3.0) % 1.0) * Math.PI * 2;
+    mesh.scale.setScalar(1.0 - (1.0 - Math.abs(mesh.position.x / 0.7)) / 3.0);
     // mesh.rotation.z = ((time * 0.2 + i * 0.1) % 1.0) * Math.PI * 2;
   }
 
@@ -242,9 +280,10 @@ function loop() {
   // const svg = ImageTracer.imagedataToSVG(imgData);
 
   if (recording) {
-    downloadPNG(canvas => {
-      recorder.capture(canvas);
-    });
+    recorder.capture(renderer.domElement);
+    // downloadPNG(canvas => {
+    //   recorder.capture(canvas);
+    // });
   }
 }
 loop();
@@ -255,7 +294,8 @@ function render() {
 
   composer.render();
 
-  if (offscreenCtx) {
+  const no = false;
+  if (no && offscreenCtx) {
     offscreenCtx.drawImage(webglCanvas, 0, 0);
     const imgData = offscreenCtx.getImageData(
       0,
@@ -271,7 +311,7 @@ function render() {
     const options = { colorquantcycles: 3 };
     // }
     if (!palette) {
-      palette = ImageTracer.samplepalette2(24, imgData);
+      palette = ImageTracer.samplepalette2(12, imgData);
       console.log(palette);
     }
     const svgString = ImageTracer.imagedataToSVG(imgData, {
@@ -297,15 +337,28 @@ function render() {
 function postprocessSvg(elem: SVGElement) {
   const elemsToRemove: SVGElement[] = [];
   const elemsToKeep = [];
-  elem.setAttribute(
-    "style",
-    (elem.getAttribute("style") || "") + ";background:black"
-  );
+  // elem.setAttribute(
+  //   "style",
+  //   (elem.getAttribute("style") || "") + ";background:black"
+  // );
   for (let i = 0; i < elem.children.length; ++i) {
     const child = elem.children[i];
     if (child instanceof SVGElement) {
       child.setAttribute("stroke", child.getAttribute("fill") as string);
       child.setAttribute("stroke-width", "2");
+
+      const fill = child.getAttribute("fill");
+      if (fill) {
+        if (fill === "rgb(0,0,0)") {
+          elemsToRemove.push(child);
+          continue;
+        }
+
+        const c = new Color(fill);
+        const lightness = c.lightness();
+        const newFill = new Color(0xffffff);
+        // child.setAttribute("fill");
+      }
 
       // child.setAttribute("stroke", "white");
       // child.setAttribute("stroke-width", "2");
@@ -329,11 +382,7 @@ function postprocessSvg(elem: SVGElement) {
         elemsToRemove.push(child);
         continue;
       }
-      const fill = child.getAttribute("fill");
-      if (fill === "rgb(0,0,0)") {
-        elemsToRemove.push(child);
-        continue;
-      }
+
       elemsToKeep.push(child);
     }
   }

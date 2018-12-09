@@ -1,44 +1,45 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #fff;
-    color: #000;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ff985c;
+  color: #000;
 
-    font-family: monospace;
+  font-family: monospace;
 }
 
 .container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .sketch-container {
-    width: 100%;
-    height: 100%;
-    max-width: 724px;
-    max-height: 512px;
-    background: #fff;
-    box-shadow: 0px 0px 10px rgb(168, 168, 168);
+  width: 100%;
+  height: 100%;
+  max-width: 724px;
+  max-height: 512px;
+  /* background: #000; */
+  /* box-shadow: 0px 0px 10px rgb(168, 168, 168); */
 }
 
 .sketch {
-    width: 100%;
-    height: 100%;
-    max-width: 724px;
-    max-height: 512px;
+  width: 100%;
+  height: 100%;
+  max-width: 724px;
+  max-height: 512px;
 }
 
 .title {
-    text-align: center;
-    margin: 10px;
+  text-align: center;
+  margin: 10px;
 }
