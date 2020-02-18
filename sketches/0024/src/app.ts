@@ -68,7 +68,7 @@ export const run = (): void => {
   const recorder = new CCapture({
     name: 'Sketch-0024',
     format: 'png',
-    framerate: 30,
+    framerate: 60,
   });
 
   const startRecording = (): void => {
