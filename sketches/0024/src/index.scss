@@ -1,0 +1,36 @@
+$app-color: #e6adcf;
+$opposite-color: white;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Courier New', Courier, monospace;
+  background: $app-color;
+}
+
+#root {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+canvas {
+  position: absolute;
+}
+
+.title {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  color: $opposite-color;
+}
