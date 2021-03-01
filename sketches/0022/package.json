@@ -21,7 +21,7 @@
     "color": "^3.1.0",
     "glsl-fxaa": "^3.0.0",
     "glsl-map": "^1.0.1",
-    "three": "^0.90.0",
+    "three": "^0.125.0",
     "three-effectcomposer-es6": "^0.0.4",
     "three-shader-fxaa": "^5.1.1"
   },
