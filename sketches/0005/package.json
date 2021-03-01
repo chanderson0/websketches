@@ -16,7 +16,7 @@
   "dependencies": {
     "ccapture.js": "^1.0.7",
     "color": "^2.0.1",
-    "three": "^0.89.0"
+    "three": "^0.125.0"
   },
   "scripts": {
     "dev": "budo src/index.ts:app.js --dir public --live -- --debug -p [ tsify ]",
