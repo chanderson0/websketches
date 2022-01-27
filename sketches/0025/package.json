@@ -36,7 +36,7 @@
     "object-fit-math": "^1.0.0",
     "open-simplex-noise": "^2.2.0",
     "sass-loader": "^8.0.2",
-    "three": "^0.113.2"
+    "three": "^0.137.0"
   },
   "scripts": {
     "clean": "rimraf build",
